@@ -23,8 +23,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
-    <EmbeddedResource Include="Assets\animations.xml" />
+    <AvaloniaResource Include="Assets\**" Exclude="Assets\animations.xml" />
+    <EmbeddedResource Include="Assets\animations.xml" LogicalName="animations.xml" />
+    <Content Include="Assets\animations.xml" CopyToOutputDirectory="PreserveNewest" Link="Assets\animations.xml" />
   </ItemGroup>
 
   <ItemGroup>

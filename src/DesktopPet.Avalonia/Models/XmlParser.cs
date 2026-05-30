@@ -39,6 +39,7 @@ public class XmlParser : IDisposable
         _scale = scaleFactor;
         _randomSpawn = new Random().Next(10, 90);
         _dataTable = new DataTable();
+        _dataTable.Locale = CultureInfo.InvariantCulture;
         _dataTable.Columns.Add("Expression", typeof(string), "");
     }
     
@@ -103,10 +104,20 @@ public class XmlParser : IDisposable
             _dataTable.Columns["Expression"].Expression = expression;
             var row = _dataTable.NewRow();
             _dataTable.Rows.Add(row);
-            var result = Convert.ToInt32(row["Expression"]);
+            var value = row["Expression"];
             _dataTable.Rows.Remove(row);
             
-            return result;
+            // Handle both integer and decimal results
+            if (value is double d)
+                return (int)d;
+            if (value is decimal m)
+                return (int)m;
+            if (value is int i)
+                return i;
+            // Try to parse as double first (handles decimal strings)
+            if (double.TryParse(value?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out double dv))
+                return (int)dv;
+            return Convert.ToInt32(value, CultureInfo.InvariantCulture);
         }
         catch (Exception ex)
         {
@@ -114,6 +125,22 @@ public class XmlParser : IDisposable
                 $"Error evaluating '{expression}' in {errorContext}: {ex.Message}");
             return 0;
         }
+    }
+    
+    /// <summary>
+    /// Parse a string value that may be an integer or an expression
+    /// </summary>
+    private int ParseIntValue(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return 0;
+            
+        // Try to parse as integer first
+        if (int.TryParse(value, out int intValue))
+            return intValue;
+            
+        // Otherwise evaluate as expression
+        return ParseValue(value, "ParseIntValue");
     }
     
     public void LoadAnimations(Animations animations)
@@ -154,7 +181,7 @@ public class XmlParser : IDisposable
                         X = TValue.FromString(spawn.X, this),
                         Y = TValue.FromString(spawn.Y, this)
                     },
-                    Next = spawn.Next
+                    Next = spawn.Next?.Value ?? 0
                 };
                 animations.AddSpawn(tSpawn);
             }
@@ -207,8 +234,8 @@ public class XmlParser : IDisposable
         {
             result.Sequence = new TSequence
             {
-                RepeatFrom = anim.Sequence.RepeatFrom,
-                RepeatCount = anim.Sequence.RepeatCount
+                RepeatFrom = ParseIntValue(anim.Sequence.RepeatFrom),
+                RepeatCount = ParseIntValue(anim.Sequence.RepeatCount)
             };
             
             if (anim.Sequence.Frame != null)

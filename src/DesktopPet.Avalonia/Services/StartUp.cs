@@ -107,14 +107,63 @@ public sealed class StartUp : IDisposable
         try
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "DesktopPet.Avalonia.Assets.animations.xml";
             
-            using var stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream != null)
+            // List available resources for debugging
+            var resourceNames = assembly.GetManifestResourceNames();
+            AddDebugInfo(DebugType.Info, $"Available resources: {string.Join(", ", resourceNames)}");
+            
+            // Try different resource name patterns
+            string[] possibleNames = {
+                "DesktopPet.Avalonia.Assets.animations.xml",
+                "eSheep.Assets.animations.xml",
+                "Assets.animations.xml",
+                "animations.xml"
+            };
+            
+            foreach (var resourceName in possibleNames)
             {
-                using var reader = new StreamReader(stream);
-                return reader.ReadToEnd();
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream != null)
+                {
+                    AddDebugInfo(DebugType.Info, $"Loaded animation from resource: {resourceName}");
+                    using var reader = new StreamReader(stream);
+                    return reader.ReadToEnd();
+                }
             }
+            
+            // Also try to find any resource containing "animations"
+            foreach (var name in resourceNames)
+            {
+                if (name.Contains("animations", StringComparison.OrdinalIgnoreCase))
+                {
+                    using var stream = assembly.GetManifestResourceStream(name);
+                    if (stream != null)
+                    {
+                        AddDebugInfo(DebugType.Info, $"Loaded animation from resource: {name}");
+                        using var reader = new StreamReader(stream);
+                        return reader.ReadToEnd();
+                    }
+                }
+            }
+            
+            // Fallback: try to load from file next to executable
+            string basePath = AppContext.BaseDirectory;
+            string[] filePaths = {
+                Path.Combine(basePath, "Assets", "animations.xml"),
+                Path.Combine(basePath, "animations.xml"),
+                Path.Combine(basePath, "..", "Assets", "animations.xml")
+            };
+            
+            foreach (var filePath in filePaths)
+            {
+                if (File.Exists(filePath))
+                {
+                    AddDebugInfo(DebugType.Info, $"Loaded animation from file: {filePath}");
+                    return File.ReadAllText(filePath);
+                }
+            }
+            
+            AddDebugInfo(DebugType.Warning, "No animation file found in resources or filesystem");
         }
         catch (Exception ex)
         {

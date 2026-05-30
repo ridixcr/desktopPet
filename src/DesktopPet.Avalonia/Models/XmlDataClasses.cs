@@ -74,6 +74,9 @@ public class SpawnsNode
 
 public class SpawnNode
 {
+    [XmlAttribute("id")]
+    public int Id;
+    
     [XmlAttribute("probability")]
     public int Probability = 1;
     
@@ -84,7 +87,7 @@ public class SpawnNode
     public string Y;
     
     [XmlElement("next")]
-    public int Next;
+    public NextNode Next;
 }
 
 public class AnimationsNode
@@ -117,10 +120,10 @@ public class AnimationNode
 public class SequenceNode
 {
     [XmlAttribute("repeatfrom")]
-    public int RepeatFrom;
+    public string RepeatFrom;
     
     [XmlAttribute("repeat")]
-    public int RepeatCount;
+    public string RepeatCount;
     
     [XmlElement("frame")]
     public int[] Frame;
