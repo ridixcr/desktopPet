@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="64" d:DesignHeight="64"
+        x:Class="DesktopPet.Avalonia.Views.PetWindow"
+        Title="eSheep"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        SystemDecorations="None"
+        ShowInTaskbar="False"
+        Topmost="True"
+        CanResize="False"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="Manual">
+    
+    <Panel Name="RootPanel">
+        <Image Name="PetImage" 
+               Stretch="None"
+               PointerPressed="OnPointerPressed"
+               PointerReleased="OnPointerReleased"
+               PointerMoved="OnPointerMoved"/>
+    </Panel>
+</Window>

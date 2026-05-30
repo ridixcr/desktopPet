@@ -27,17 +27,20 @@ In this way, this pet is able to walk, run, etc around your working screen area 
 ```bash
 sudo apt install mono-complete
 sudo snap install dotnet --classic
-sudo apt install wine
 ```
 
 # Build
 
 ```bash
-dotnet build src/DesktopPet.csproj
+# Compilar para Linux
+cd src/DesktopPet.Avalonia
+dotnet publish -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true
 
-dotnet publish src/DesktopPet.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+# Compilar para Windows
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
 
-wine build/DesktopPet/bin/Release/AnyCPU/net8.0-windows10.0.22621.0/win-x64/eSheep.exe
+# Compilar para macOS
+dotnet publish -c Release -r osx-x64 --self-contained true -p:PublishSingleFile=true
 ```
 
 # Screen Mates included in this application
