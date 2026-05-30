@@ -3,7 +3,7 @@
 Can you remember eSheep, the lovely desktop sheep?
 <img src='src/Images/esheep.png' /><br />
 If you had a lot of them on the desktop... welcome to this page!<br />
-This project gives you the possibility to add a pet to your desktop.<br />[![eSheep for 64bit systems](https://img.youtube.com/vi/xN90p16tKGE/0.jpg)](https://www.youtube.com/watch?v=xN90p16tKGE) 
+This project gives you the possibility to add a pet to your desktop.<br />![eSheep for 64bit systems](./Resources/eSheep-linux.png)] 
 
 With a simple XML file (animations.xml) it is possible to change pet and animations.
 
