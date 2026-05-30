@@ -34,6 +34,7 @@ sudo snap install dotnet --classic
 ```bash
 # Compilar para Linux
 cd src/DesktopPet.Avalonia
+
 dotnet publish -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true
 
 # Compilar para Windows
