@@ -21,6 +21,25 @@ In this way, this pet is able to walk, run, etc around your working screen area 
 | Description | Download rar, extract exe file and execute it. There is no installation. | Download it directly from the Microsoft store | Javascript file to implement it on your webpage | Some tools to edit and create your own pet.
 | Link | <a href='https://github.com/Adrianotiger/desktopPet/releases/latest'><img src='https://img.shields.io/github/downloads/adrianotiger/desktopPet/total.svg'></a> | <a href='https://www.microsoft.com/store/apps/9MX2V0TQT6RM'>Windows store</a> | <a href='https://github.com/Adrianotiger/web-esheep'>Open GitHub</a> project | -<a href='https://github.com/Adrianotiger/desktopPet/releases/latest'>Download Pet Editor</a> |
 
+# Dependencies
+
+
+```bash
+sudo apt install mono-complete
+sudo snap install dotnet --classic
+sudo apt install wine
+```
+
+# Build
+
+```bash
+dotnet build src/DesktopPet.csproj
+
+dotnet publish src/DesktopPet.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+
+wine build/DesktopPet/bin/Release/AnyCPU/net8.0-windows10.0.22621.0/win-x64/eSheep.exe
+```
+
 # Screen Mates included in this application
 | | | | |
 |--------|--------|----|-----|
