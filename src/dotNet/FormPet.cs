@@ -1088,43 +1088,53 @@ namespace DesktopPet
             }
             else if(e.Button == MouseButtons.Right && StartUp.IsDebugActive())
             {
-                ContextMenu cm = new ContextMenu();
-                cm.MenuItems.Add("ID." + CurrentAnimation.ID + " - " + CurrentAnimation.Name).Enabled = false;
-                cm.MenuItems.Add("-");
-                MenuItem menuNext = cm.MenuItems.Add("Next");
-                MenuItem menuBorder = cm.MenuItems.Add("Border");
-                MenuItem menuGravity = cm.MenuItems.Add("Gravity");
-                cm.MenuItems.Add("-");
-                MenuItem menuSpawn = cm.MenuItems.Add("Spawns");
+                ContextMenuStrip cm = new ContextMenuStrip();
+                var headerItem = cm.Items.Add("ID." + CurrentAnimation.ID + " - " + CurrentAnimation.Name);
+                headerItem.Enabled = false;
+                cm.Items.Add("-");
+                ToolStripMenuItem menuNext = new ToolStripMenuItem("Next");
+                ToolStripMenuItem menuBorder = new ToolStripMenuItem("Border");
+                ToolStripMenuItem menuGravity = new ToolStripMenuItem("Gravity");
+                cm.Items.Add(menuNext);
+                cm.Items.Add(menuBorder);
+                cm.Items.Add(menuGravity);
+                cm.Items.Add("-");
+                ToolStripMenuItem menuSpawn = new ToolStripMenuItem("Spawns");
+                cm.Items.Add(menuSpawn);
 
                 List<TNextAnimation> list = Animations.GetNextAnimations(CurrentAnimation.ID, true, false, false);
                 foreach (TNextAnimation ani in list)
                 {
-                    MenuItem menu = menuNext.MenuItems.Add("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + "\t (Prob: " + ani.Probability + ") only:" + ani.only.ToString());
+                    ToolStripMenuItem menu = new ToolStripMenuItem("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + "\t (Prob: " + ani.Probability + ") only:" + ani.only.ToString());
                     menu.Click += (ms, me) => { SetNewAnimation(ani.ID); };
+                    menuNext.DropDownItems.Add(menu);
                 }
                 if (list.Count == 0) menuNext.Enabled = false;
 
                 list = Animations.GetNextAnimations(CurrentAnimation.ID, false, true, false);
                 foreach (TNextAnimation ani in list)
                 {
-                    MenuItem menu = menuBorder.MenuItems.Add("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + "\t (Prob: " + ani.Probability + ") only: " + ani.only.ToString());
+                    ToolStripMenuItem menu = new ToolStripMenuItem("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + "\t (Prob: " + ani.Probability + ") only: " + ani.only.ToString());
                     menu.Click += (ms, me) => { SetNewAnimation(ani.ID); };
+                    menuBorder.DropDownItems.Add(menu);
                 }
                 if (list.Count == 0) menuBorder.Enabled = false;
 
                 list = Animations.GetNextAnimations(CurrentAnimation.ID, false, false, true);
                 foreach (TNextAnimation ani in list)
                 {
-                    MenuItem menu = menuGravity.MenuItems.Add("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + "\t (Prob: " + ani.Probability + ") only:" + ani.only.ToString());
+                    ToolStripMenuItem menu = new ToolStripMenuItem("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + "\t (Prob: " + ani.Probability + ") only:" + ani.only.ToString());
                     menu.Click += (ms, me) =>{ SetNewAnimation(ani.ID); };
+                    menuGravity.DropDownItems.Add(menu);
                 }
                 if (list.Count == 0) menuGravity.Enabled = false;
 
                 List<TSpawn> listS = Animations.GetNextSpawns();
+                int spawnIdx = 0;
                 foreach (TSpawn spa in listS)
                 {
-                    MenuItem menu = menuSpawn.MenuItems.Add("ID." + spa.Next + " - " + Animations.SheepAnimations[spa.Next].Name + "\t (Prob: " + spa.Probability + ")");
+                    int currentSpawnIndex = spawnIdx;
+                    ToolStripMenuItem menu = new ToolStripMenuItem("ID." + spa.Next + " - " + Animations.SheepAnimations[spa.Next].Name + "\t (Prob: " + spa.Probability + ")");
                     menu.Click += (ms, me) => 
                     {
                         //Top = ScreenBounds.Y + spa.Start.Y.GetValue(DisplayIndex);
@@ -1132,21 +1142,22 @@ namespace DesktopPet
                         //PositionX = Left;
                         //PositionY = Top;
                         //OffsetY = 0.0;
-                        int spawnIndex = menu.Index;
-                        Play(false, spawnIndex);
+                        Play(false, currentSpawnIndex);
                     };
+                    menuSpawn.DropDownItems.Add(menu);
+                    spawnIdx++;
                 }
 
                 timer1.Enabled = false;
 
-                cm.Collapse += (ms, me) =>
+                cm.Closed += (ms, me) =>
                 {
                     timer1.Interval = 1;
                     timer1.Enabled = true;
                 };
 
-                pictureBox1.ContextMenu = cm;
-                pictureBox1.ContextMenu.Show(pictureBox1, new Point(0,this.Top > 500 ? 0 : this.Height));
+                pictureBox1.ContextMenuStrip = cm;
+                cm.Show(pictureBox1, new Point(0, this.Top > 500 ? 0 : this.Height));
             }
         }
 
